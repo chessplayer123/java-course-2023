@@ -5,7 +5,6 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
-import org.jetbrains.annotations.NotNull;
 
 
 public class ConsoleHangman {
@@ -17,24 +16,24 @@ public class ConsoleHangman {
     }
 
     private final int maxMistakes = 5;
-    private final HiddenWord hiddenWord;
+    private HiddenWord hiddenWord;
+    private final Dictionary dict;
     private final Scanner scanner;
     private final PrintStream printStream;
     private GameStatus gameStatus;
     private int mistakes;
 
     public ConsoleHangman(
-        @NotNull String word,
+        Dictionary dict,
         InputStream inputStream,
         OutputStream outputStream
     ) throws IllegalArgumentException {
-        if (word.length() == 0) {
-            throw new IllegalArgumentException("Incorrect word length (expected > 0)");
-        }
-        gameStatus = GameStatus.NotStarted;
         scanner = new Scanner(inputStream);
         printStream = new PrintStream(outputStream);
-        hiddenWord = new HiddenWord(word);
+        this.dict = dict;
+
+        mistakes = 0;
+        gameStatus = GameStatus.NotStarted;
     }
 
     public GameStatus getGameStatus() {
@@ -51,12 +50,12 @@ public class ConsoleHangman {
             String userInput;
             userInput = scanner.nextLine();
             if (userInput.length() != 1) {
-                printStream.println("Wrong input.");
+                printStream.println("< Wrong input.");
                 return '\r';
             }
             return userInput.charAt(0);
         } catch (NoSuchElementException e) {
-            printStream.println("Resign.");
+            printStream.println("< Resign.");
             gameStatus = GameStatus.Defeat;
             return '\r';
         }
@@ -87,19 +86,27 @@ public class ConsoleHangman {
         printStream.printf(
             """
             Hangman game:
-                You are given with the %d character string
+                You are given a word of length %d
                 You can make %d mistakes
-                Press <CTRL-D> to surrender
+                Press <CTRL-D> to give up
             """,
             hiddenWord.getGuess().length(), maxMistakes
         );
     }
 
     public void run() {
-        printHeader();
+        gameStatus = GameStatus.NotStarted;
 
+        String word = dict.getRandomWord();
+        if (word.length() == 0) {
+            return;
+        }
+
+        hiddenWord = new HiddenWord(word);
+        printHeader();
         mistakes = 0;
         gameStatus = GameStatus.InProgress;
+
         while (gameStatus == GameStatus.InProgress) {
             printStream.printf("< Attempts: [%d/%d]\n< %s\n", mistakes, maxMistakes, hiddenWord.getGuess());
 
@@ -111,9 +118,9 @@ public class ConsoleHangman {
         }
 
         if (gameStatus == GameStatus.Win) {
-            printStream.printf("Congratulations. You have won. The word was: '%s'.", hiddenWord.getWord());
+            printStream.printf("Congratulations. You have won. Word: '%s'.", hiddenWord.getWord());
         } else {
-            printStream.printf("You have lost. The word was: '%s'.", hiddenWord.getWord());
+            printStream.printf("You have lost. Word: '%s'.", hiddenWord.getWord());
         }
     }
 }
