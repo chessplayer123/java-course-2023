@@ -3,6 +3,7 @@ package edu.project1;
 import org.junit.jupiter.api.Test;
 import java.io.ByteArrayInputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Array;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -10,17 +11,25 @@ import edu.project1.ConsoleHangman.GameStatus;
 
 public class ConsoleHangmanTest {
     private static final OutputStream dummyStream = new OutputStream() {
+        private final StringBuilder message = new StringBuilder();
+
         @Override
         public void write(int i) {
+            message.append((char)i);
+        }
+
+        @Override
+        public String toString() {
+            return message.toString();
         }
     };
 
     @Test
     void testCorrectWordGuess() {
-        String word = "test";
+        ArrayDict dict = new ArrayDict("test");
         ByteArrayInputStream input = new ByteArrayInputStream("t\ne\ns\n".getBytes());
 
-        ConsoleHangman game = new ConsoleHangman(word, input, dummyStream);
+        ConsoleHangman game = new ConsoleHangman(dict, input, dummyStream);
         game.run();
 
         GameStatus actualResult = game.getGameStatus();
@@ -31,10 +40,10 @@ public class ConsoleHangmanTest {
 
     @Test
     void testExceedingNumOfAttempts() {
-        String word = "test";
+        ArrayDict dict = new ArrayDict("test");
         ByteArrayInputStream input = new ByteArrayInputStream("a\nb\nc\nd\nf\n".getBytes());
 
-        ConsoleHangman game = new ConsoleHangman(word, input, dummyStream);
+        ConsoleHangman game = new ConsoleHangman(dict, input, dummyStream);
         game.run();
 
         GameStatus actualResult = game.getGameStatus();
@@ -48,10 +57,10 @@ public class ConsoleHangmanTest {
 
     @Test
     void testCorrectWordGuessWithMistakes() {
-        String word = "test";
+        ArrayDict dict = new ArrayDict("test");
         ByteArrayInputStream input = new ByteArrayInputStream("t\nb\nc\nd\ne\ns\n".getBytes());
 
-        ConsoleHangman game = new ConsoleHangman(word, input, dummyStream);
+        ConsoleHangman game = new ConsoleHangman(dict, input, dummyStream);
         game.run();
 
         GameStatus actualResult = game.getGameStatus();
@@ -65,10 +74,10 @@ public class ConsoleHangmanTest {
 
     @Test
     void testCorrectWordGuessWithRepeats() {
-        String word = "test";
+        ArrayDict dict = new ArrayDict("test");
         ByteArrayInputStream input = new ByteArrayInputStream("t\nt\nt\nt\ne\ns\n".getBytes());
 
-        ConsoleHangman game = new ConsoleHangman(word, input, dummyStream);
+        ConsoleHangman game = new ConsoleHangman(dict, input, dummyStream);
         game.run();
 
         GameStatus actualResult = game.getGameStatus();
@@ -82,10 +91,10 @@ public class ConsoleHangmanTest {
 
     @Test
     void testCorrectWordGuessWithWrongFormat() {
-        String word = "test";
+        ArrayDict dict = new ArrayDict("test");
         ByteArrayInputStream input = new ByteArrayInputStream("t\ntoo long\n\n\ne\ns".getBytes());
 
-        ConsoleHangman game = new ConsoleHangman(word, input, dummyStream);
+        ConsoleHangman game = new ConsoleHangman(dict, input, dummyStream);
         game.run();
 
         GameStatus actualResult = game.getGameStatus();
@@ -99,10 +108,10 @@ public class ConsoleHangmanTest {
 
     @Test
     void testEndOfStream() {
-        String word = "word";
+        ArrayDict dict = new ArrayDict("word");
         ByteArrayInputStream input = new ByteArrayInputStream("".getBytes());
 
-        ConsoleHangman game = new ConsoleHangman(word, input, dummyStream);
+        ConsoleHangman game = new ConsoleHangman(dict, input, dummyStream);
         game.run();
 
         GameStatus actualResult = game.getGameStatus();
@@ -113,10 +122,10 @@ public class ConsoleHangmanTest {
 
     @Test
     void testInitWithoutRunCall() {
-        String word = "word";
+        ArrayDict dict = new ArrayDict("word");
         ByteArrayInputStream input = new ByteArrayInputStream("w\no\nr\nd\n".getBytes());
 
-        ConsoleHangman game = new ConsoleHangman(word, input, dummyStream);
+        ConsoleHangman game = new ConsoleHangman(dict, input, dummyStream);
 
         GameStatus actualStatus = game.getGameStatus();
         GameStatus expectedStatus = GameStatus.NotStarted;
@@ -126,16 +135,56 @@ public class ConsoleHangmanTest {
 
     @Test
     void testIncorrectWordLength() {
-        String emptyString = "";
+        ArrayDict dict = new ArrayDict("");
         ByteArrayInputStream input = new ByteArrayInputStream("w\no\nr\nd\n".getBytes());
 
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            new ConsoleHangman(emptyString, input, dummyStream);
-        });
+        ConsoleHangman game = new ConsoleHangman(dict, input, dummyStream);
+        game.run();
 
-        String expectedMessage = "Incorrect word length (expected > 0)";
+        GameStatus actualStatus = game.getGameStatus();
+        GameStatus expectedStatus = GameStatus.NotStarted;
+
+        assertEquals(expectedStatus, actualStatus);
+    }
+
+    @Test
+    void testExceptionOnEmptyDictionary() {
+        Exception exception = assertThrows(IllegalArgumentException.class, ArrayDict::new);
+
+        String expectedMessage = "Expected at least one word in dict";
         String actualMessage = exception.getMessage();
 
         assertTrue(actualMessage.contains(expectedMessage));
+    }
+
+    @Test
+    void testProgramOutput() {
+        ArrayDict dict = new ArrayDict("word");
+        ByteArrayInputStream input = new ByteArrayInputStream("w\no\nr\nd\n".getBytes());
+
+        ConsoleHangman game = new ConsoleHangman(dict, input, dummyStream);
+        game.run();
+
+        String expectedOutput = """
+Hangman game:
+    You are given a word of length 4
+    You can make 5 mistakes
+    Press <CTRL-D> to give up
+< Attempts: [0/5]
+< ****
+> < Correct guess.
+< Attempts: [0/5]
+< w***
+> < Correct guess.
+< Attempts: [0/5]
+< wo**
+> < Correct guess.
+< Attempts: [0/5]
+< wor*
+> < Correct guess. You have guessed the word.
+Congratulations. You have won. Word: 'word'.""";
+        String actualOutput = dummyStream.toString();
+
+        assertEquals(expectedOutput, actualOutput);
     }
 }

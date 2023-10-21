@@ -43,7 +43,7 @@ public class HiddenWordTest {
     }
 
     @Test
-    void testHiddenWordChangeCorrectGuess() {
+    void testHiddenWordChangeOnCorrectGuess() {
         HiddenWord hiddenWord = new HiddenWord("word");
 
         char charGuess = 'd';
@@ -56,7 +56,7 @@ public class HiddenWordTest {
     }
 
     @Test
-    void testHiddenWordChangeIncorrectGuess() {
+    void testHiddenWordChangeOnIncorrectGuess() {
         HiddenWord hiddenWord = new HiddenWord("word");
 
         char charGuess = 'l';
