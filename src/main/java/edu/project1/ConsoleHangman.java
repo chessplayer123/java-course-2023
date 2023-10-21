@@ -27,7 +27,7 @@ public class ConsoleHangman {
         Dictionary dict,
         InputStream inputStream,
         OutputStream outputStream
-    ) throws IllegalArgumentException {
+    ) {
         scanner = new Scanner(inputStream);
         printStream = new PrintStream(outputStream);
         this.dict = dict;
