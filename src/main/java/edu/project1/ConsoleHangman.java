@@ -7,7 +7,14 @@ import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 
+
 public class ConsoleHangman {
+    static class InvalidInputException extends RuntimeException {
+    }
+
+    static class EndOfStreamException extends RuntimeException {
+    }
+
     enum GameStatus {
         NotStarted,
         InProgress,
@@ -44,20 +51,17 @@ public class ConsoleHangman {
         return mistakes;
     }
 
-    private char readGuessedChar() {
+    private char readGuessedChar() throws InvalidInputException, EndOfStreamException {
         printStream.print("> ");
         try {
             String userInput;
             userInput = scanner.nextLine();
             if (userInput.length() != 1) {
-                printStream.println("< Wrong input.");
-                return '\r';
+                throw new InvalidInputException();
             }
             return userInput.charAt(0);
         } catch (NoSuchElementException e) {
-            printStream.println("< Resign.");
-            gameStatus = GameStatus.Defeat;
-            return '\r';
+            throw new EndOfStreamException();
         }
     }
 
@@ -110,11 +114,16 @@ public class ConsoleHangman {
         while (gameStatus == GameStatus.InProgress) {
             printStream.printf("< Attempts: [%d/%d]\n< %s\n", mistakes, maxMistakes, hiddenWord.getGuess());
 
-            char guess = readGuessedChar();
-            if (guess == '\r') {
-                continue;
+            try {
+                char guess = readGuessedChar();
+                processChar(guess);
+            } catch (InvalidInputException e) {
+                printStream.println("< Wrong input.");
+            } catch(EndOfStreamException e) {
+                printStream.println("< Resign.");
+                gameStatus = GameStatus.Defeat;
+                break;
             }
-            processChar(guess);
         }
 
         if (gameStatus == GameStatus.Win) {
