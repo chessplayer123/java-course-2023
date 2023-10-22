@@ -9,12 +9,6 @@ import java.util.Scanner;
 
 
 public class ConsoleHangman {
-    static class InvalidInputException extends RuntimeException {
-    }
-
-    static class EndOfStreamException extends RuntimeException {
-    }
-
     enum GameStatus {
         NotStarted,
         InProgress,
@@ -119,7 +113,7 @@ public class ConsoleHangman {
                 processChar(guess);
             } catch (InvalidInputException e) {
                 printStream.println("< Wrong input.");
-            } catch(EndOfStreamException e) {
+            } catch (EndOfStreamException e) {
                 printStream.println("< Resign.");
                 gameStatus = GameStatus.Defeat;
                 break;
@@ -131,5 +125,11 @@ public class ConsoleHangman {
         } else {
             printStream.printf("You have lost. Word: '%s'.", hiddenWord.getWord());
         }
+    }
+
+    static class InvalidInputException extends RuntimeException {
+    }
+
+    static class EndOfStreamException extends RuntimeException {
     }
 }
