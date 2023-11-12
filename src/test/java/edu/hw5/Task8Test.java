@@ -37,9 +37,7 @@ public class Task8Test {
     @ParameterizedTest
     @MethodSource("oddLengthPatternInput")
     void oddLengthPatternCheck(String string, Boolean expectedResult) {
-        Task8 task8 = new Task8();
-
-        Boolean actualResult = task8.hasOddLength(string);
+        Boolean actualResult = Task8.hasOddLength(string);
 
         assertThat(actualResult).isEqualTo(expectedResult);
     }
@@ -70,9 +68,7 @@ public class Task8Test {
     @ParameterizedTest
     @MethodSource("zeroOddOneEvenPatternInput")
     void startsWithZeroOddOrStartsWithOneEvenPatternCheck(String string, Boolean expectedResult) {
-        Task8 task8 = new Task8();
-
-        Boolean actualResult = task8.isStartsWithZeroHasOddLenOrStartsWithOneHasEvenLen(string);
+        Boolean actualResult = Task8.isStartsWithZeroHasOddLenOrStartsWithOneHasEvenLen(string);
 
         assertThat(actualResult).isEqualTo(expectedResult);
     }
@@ -103,9 +99,7 @@ public class Task8Test {
     @ParameterizedTest
     @MethodSource("numOfZeroesDivByThreePatternInput")
     void numOfZeroesDivisibleByThreePatternCheck(String string, Boolean expectedResult) {
-        Task8 task8 = new Task8();
-
-        Boolean actualResult = task8.hasNumberOfZeroesDivisibleByThree(string);
+        Boolean actualResult = Task8.hasNumberOfZeroesDivisibleByThree(string);
 
         assertThat(actualResult).isEqualTo(expectedResult);
     }
@@ -130,9 +124,7 @@ public class Task8Test {
     @ParameterizedTest
     @MethodSource("anyStringExcept11Or111PatternInput")
     void isAnyStringExcept11Or111PatternCheck(String string, Boolean expectedResult) {
-        Task8 task8 = new Task8();
-
-        Boolean actualResult = task8.isAnyStringExcept11Or111(string);
+        Boolean actualResult = Task8.isAnyStringExcept11Or111(string);
 
         assertThat(actualResult).isEqualTo(expectedResult);
     }
@@ -162,9 +154,7 @@ public class Task8Test {
     @ParameterizedTest
     @MethodSource("charsOnOddPositionsAreZeroesPatternInput")
     void charsOnOddPositionsAreZeroesPatternCheck(String string, Boolean expectedResult) {
-        Task8 task8 = new Task8();
-
-        Boolean actualResult = task8.hasEveryCharOnOddPositionEqualsZero(string);
+        Boolean actualResult = Task8.hasEveryCharOnOddPositionEqualsZero(string);
 
         assertThat(actualResult).isEqualTo(expectedResult);
     }
@@ -194,9 +184,7 @@ public class Task8Test {
     @ParameterizedTest
     @MethodSource("atLeast2ZeroesAndAtMost1OnePatternInput")
     void hasAtLeast2ZeroesAndAtMost1OnePatternCheck(String string, Boolean expectedResult) {
-        Task8 task8 = new Task8();
-
-        Boolean actualResult = task8.hasAtLeast2ZeroesAndAtMost1One(string);
+        Boolean actualResult = Task8.hasAtLeast2ZeroesAndAtMost1One(string);
 
         assertThat(actualResult).isEqualTo(expectedResult);
     }
@@ -226,9 +214,7 @@ public class Task8Test {
     @ParameterizedTest
     @MethodSource("consecutiveOnesPatternInput")
     void hasNoConsecutiveOnesPatternCheck(String string, Boolean expectedResult) {
-        Task8 task8 = new Task8();
-
-        Boolean actualResult = task8.hasNoConsecutiveOnes(string);
+        Boolean actualResult = Task8.hasNoConsecutiveOnes(string);
 
         assertThat(actualResult).isEqualTo(expectedResult);
     }
