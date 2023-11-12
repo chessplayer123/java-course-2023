@@ -7,16 +7,16 @@ import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
 
 public final class DateFormatParser extends DateParserChain {
-    private final String dateFormat;
+    private final DateTimeFormatter dateFormat;
 
-    public DateFormatParser(String dateFormat) {
-        this.dateFormat = dateFormat;
+    public DateFormatParser(String pattern) {
+        dateFormat = DateTimeFormatter.ofPattern(pattern);
     }
 
     @Override
     public Optional<LocalDate> parse(@NotNull String date) {
         try {
-            LocalDate parsedDate = LocalDate.parse(date, DateTimeFormatter.ofPattern(dateFormat));
+            LocalDate parsedDate = LocalDate.parse(date, dateFormat);
             return Optional.of(parsedDate);
         } catch (DateTimeParseException e) {
             return parseByNextChain(date);
