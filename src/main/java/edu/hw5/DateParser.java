@@ -15,6 +15,7 @@ public class DateParser {
         parserChain
             .setNextChain(new RelativeDateFormatParser("tomorrow", +1))
             .setNextChain(new RelativeDateFormatParser("yesterday", -1))
+            .setNextChain(new RelativeDateFormatParser("1 day ago", -1))
             .setNextChain(new DateFormatParser("yyyy-MM-dd"))
             .setNextChain(new DateFormatParser("yyyy-M-d"))
             .setNextChain(new DateFormatParser("d/M/yyyy"))

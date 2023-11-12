@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 public class AvgSessionDurationCounter {
+    private static final SimpleDateFormat SESSION_FORMAT = new SimpleDateFormat("yyyy-MM-dd, hh:mm");
     public AvgSessionDurationCounter() {
     }
 
@@ -14,8 +15,6 @@ public class AvgSessionDurationCounter {
         if (sessions.isEmpty()) {
             return Duration.ofMillis(0);
         }
-
-        SimpleDateFormat sessionFormat = new SimpleDateFormat("yyyy-MM-dd, hh:mm");
 
         long sessionsSum = 0;
         for (String session: sessions) {
@@ -25,8 +24,8 @@ public class AvgSessionDurationCounter {
             }
 
             try {
-                Date start = sessionFormat.parse(range[0]);
-                Date end = sessionFormat.parse(range[1]);
+                Date start = SESSION_FORMAT.parse(range[0]);
+                Date end = SESSION_FORMAT.parse(range[1]);
                 sessionsSum += end.getTime() - start.getTime();
             } catch (ParseException e) {
                 throw new IllegalArgumentException("wrong date format");
