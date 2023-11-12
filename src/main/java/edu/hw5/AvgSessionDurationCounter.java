@@ -8,6 +8,7 @@ import java.util.List;
 
 public class AvgSessionDurationCounter {
     private static final SimpleDateFormat SESSION_FORMAT = new SimpleDateFormat("yyyy-MM-dd, hh:mm");
+
     public AvgSessionDurationCounter() {
     }
 
