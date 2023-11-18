@@ -21,7 +21,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 // In case of a hash collision, key:value pair will be written to the same file on different lines
-@SuppressWarnings("MultipleStringLiterals")
 public class DiskMap implements Map<String, String> {
     private final Path path;
 
