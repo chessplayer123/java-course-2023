@@ -37,7 +37,9 @@ public class ArgParser {
 
         for (var entry : definedArgs.entrySet()) {
             if (entry.getValue().isRequired && !parsedArgs.containsKey(entry.getKey())) {
-                throw new RuntimeException("No value was provided for required argument '%s'".formatted(entry.getKey()));
+                throw new RuntimeException(
+                    "No value was provided for required argument '%s'".formatted(entry.getKey())
+                );
             } else if (!entry.getValue().isRequired && !parsedArgs.containsKey(entry.getKey())) {
                 parsedArgs.put(entry.getKey(), entry.getValue().defaultValue);
             }

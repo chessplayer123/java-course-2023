@@ -1,9 +1,10 @@
 package edu.project3;
 
-import org.jetbrains.annotations.NotNull;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.stream.IntStream;
+import org.jetbrains.annotations.NotNull;
 
 public class Table {
     private final int cols;
@@ -39,6 +40,11 @@ public class Table {
             throw new IllegalArgumentException("Lines must have the same size");
         }
         data.add(line);
+    }
+
+    @Override
+    public int hashCode() {
+        return data.hashCode();
     }
 
     @Override
