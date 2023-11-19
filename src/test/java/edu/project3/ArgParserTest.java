@@ -13,17 +13,6 @@ public class ArgParserTest {
         .optionalArgument("format", "markdown");
 
     @Test
-    void test() {
-        //Main.main(new String[] {"--path", "src/**/2015*", "--format", "markdown"});
-        /*
-        Main.main(new String[] {
-            "--path", "https://raw.githubusercontent.com/elastic/examples/master/Common%20Data%20Formats/nginx_logs/nginx_logs",
-            "--format", "adoc"
-        });
-         */
-    }
-
-    @Test
     void allArgumentsParsedCorrectly() {
         String[] args = new String[] {
             "--path",   "glob-or-url",
