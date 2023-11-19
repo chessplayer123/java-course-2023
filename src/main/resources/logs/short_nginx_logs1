@@ -1,0 +1,7 @@
+216.46.173.126 - - [19/May/2015:19:05:02 +0000] "GET /downloads/product_1 HTTP/1.1" 404 331 "-" "Debian APT-HTTP/1.3 (0.8.16~exp12ubuntu10.16)"
+216.46.173.126 - - [19/May/2015:19:05:38 +0000] "GET /downloads/product_1 HTTP/1.1" 404 331 "-" "Debian APT-HTTP/1.3 (0.8.16~exp12ubuntu10.16)"
+195.66.81.4 - - [19/May/2015:19:05:24 +0000] "GET /downloads/product_1 HTTP/1.1" 200 2592 "-" "urlgrabber/3.1.0 yum/3.2.22"
+216.46.173.126 - - [19/May/2015:19:05:08 +0000] "GET /downloads/product_1 HTTP/1.1" 404 328 "-" "Debian APT-HTTP/1.3 (0.8.16~exp12ubuntu10.16)"
+114.80.245.62 - - [19/May/2015:19:05:26 +0000] "GET /downloads/product_2 HTTP/1.1" 200 26318005 "-" "Mozilla/5.0 (Windows NT 5.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.104 Safari/537.36"
+195.66.81.4 - - [19/May/2015:19:05:31 +0000] "GET /downloads/product_1 HTTP/1.1" 200 2592 "-" "Wget/1.11.4 Red Hat modified"
+54.85.201.237 - - [19/May/2015:19:05:56 +0000] "GET /downloads/product_3 HTTP/1.1" 200 1073033 "-" "Chef Client/11.6.2 (ruby-1.9.3-p448; ohai-6.18.0; x86_64-linux; +http://opscode.com)"
