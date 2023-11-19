@@ -11,6 +11,7 @@ import edu.project3.StatisticalFunctions.StatisticalFunction;
 import edu.project3.StatisticalFunctions.UsersAddresses;
 import org.junit.jupiter.api.Test;
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.stream.Stream;
 
 public class StatisticalFunctionsTest {
@@ -101,13 +102,13 @@ public class StatisticalFunctionsTest {
 
     @Test
     void generalInfoReturnExpectedStatistic() {
-        StatisticalFunction function = new GeneralInfo();
+        StatisticalFunction function = new GeneralInfo(List.of("test-file"));
         records().forEach(function::process);
 
         Table actualStatistic = function.getStatistic();
 
         Table expectedStatistic = new Table("Общая информация", new String[] {"Метрика", "Значение"});
-        expectedStatistic.addLine("Файлы",                 "-");
+        expectedStatistic.addLine("Файлы",                 "`test-file`");
         expectedStatistic.addLine("Начальная дата",        "2000-05-19");
         expectedStatistic.addLine("Конечная дата",         "2000-06-01");
         expectedStatistic.addLine("Количество запросов",   "3");

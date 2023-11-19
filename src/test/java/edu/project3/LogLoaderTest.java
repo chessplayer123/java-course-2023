@@ -22,7 +22,7 @@ public class LogLoaderTest {
         buffer.put(array1);
         buffer.put(array2);
 
-        byte[] actualData = LogLoader.load("**/short_nginx_logs*").readAllBytes();
+        byte[] actualData = LogLoader.load("**/short_nginx_logs*").stream().readAllBytes();
 
         assertThat(actualData).containsOnly(expectedData);
     }
@@ -31,6 +31,7 @@ public class LogLoaderTest {
     void loadFromURL() throws IOException, InterruptedException {
         byte[] actualData = LogLoader
             .load("https://raw.githubusercontent.com/chessplayer123/java-course-2023/main/README.md")
+            .stream()
             .readAllBytes();
 
         byte[] expectedData = """

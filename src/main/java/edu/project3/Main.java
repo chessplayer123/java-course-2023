@@ -8,7 +8,6 @@ import edu.project3.StatisticalFunctions.RequestedResources;
 import edu.project3.StatisticalFunctions.ResponseCodes;
 import edu.project3.StatisticalFunctions.UsersAddresses;
 import java.io.IOException;
-import java.io.InputStream;
 import java.text.ParseException;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
@@ -27,8 +26,8 @@ public final class Main {
         .toFormatter(Locale.ENGLISH);
     private static final ArgParser ARG_PARSER = new ArgParser()
         .requiredArgument("path")
-        .optionalArgument("from",   "2000-01-01:00:00:00 +0000")
-        .optionalArgument("to",     "3000-01-01:00:00:00 +0000")
+        .optionalArgument("from",   "0001-01-01:00:00:00 +0000")
+        .optionalArgument("to",     "9999-01-01:00:00:00 +0000")
         .optionalArgument("format", "markdown");
 
     private Main() {
@@ -46,12 +45,12 @@ public final class Main {
         OffsetDateTime from;
         OffsetDateTime to;
         ReportFormatter formatter;
-        InputStream stream;
+        LogLoader.Logs logs;
         try {
             formatter = FormatterType.fromString(parsedArgs.get("format"));
             from = OffsetDateTime.from(DATE_FORMAT.parse(parsedArgs.get("from")));
             to = OffsetDateTime.from(DATE_FORMAT.parse(parsedArgs.get("to")));
-            stream = LogLoader.load(parsedArgs.get("path"));
+            logs = LogLoader.load(parsedArgs.get("path"));
         } catch (Exception exception) {
             LOGGER.error("Wrong argument format: {}", exception.getMessage());
             return;
@@ -59,14 +58,14 @@ public final class Main {
 
         Stream<LogRecord> records;
         try {
-            records = LogParser.parse(stream, from, to);
+            records = LogParser.parse(logs.stream(), from, to);
         } catch (IOException | ParseException exception) {
             LOGGER.error("Wrong file format: {}", exception.getMessage());
             return;
         }
 
         LogReport report = LogReport.builder()
-            .statistic(new GeneralInfo())        // Required
+            .statistic(new GeneralInfo(logs.filenames()))      // Required
             .statistic(new RequestedResources()) // Required
             .statistic(new ResponseCodes())      // Required
             .statistic(new UsersAddresses())     // Additional
@@ -74,6 +73,6 @@ public final class Main {
             .source(records)
             .build();
 
-        LOGGER.info(formatter.format(report));
+        LOGGER.info("\n{}", formatter.format(report));
     }
 }

@@ -13,6 +13,8 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.PathMatcher;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 import java.util.stream.Stream;
 
@@ -20,25 +22,27 @@ public class LogLoader {
     private LogLoader() {
     }
 
-    private static InputStream loadFromGlob(String glob) throws IOException {
+    private static Logs loadFromGlob(String glob) throws IOException {
         PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:" + glob);
 
         Vector<InputStream> streams = new Vector<>();
         Path start = Path.of("");
         int depth = Integer.MAX_VALUE;
+        List<String> filenames = new ArrayList<>();
 
         try (Stream<Path> files = Files.find(start, depth, (path, attrs) -> matcher.matches(path))) {
             files.forEach(path -> {
                 try {
                     streams.add(new FileInputStream(path.toFile()));
+                    filenames.add(path.getFileName().toString());
                 } catch (FileNotFoundException ignored) { }
             });
         }
 
-        return new SequenceInputStream(streams.elements());
+        return new Logs(new SequenceInputStream(streams.elements()), filenames);
     }
 
-    private static InputStream loadFromURL(String url) throws IOException, InterruptedException {
+    private static Logs loadFromURL(String url) throws IOException, InterruptedException {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
             .uri(URI.create(url))
@@ -47,13 +51,17 @@ public class LogLoader {
 
         HttpResponse<InputStream> response = client.send(request, HttpResponse.BodyHandlers.ofInputStream());
 
-        return response.body();
+        String[] path = url.split("/");
+
+        return new Logs(response.body(), List.of(path[path.length - 1]));
     }
 
-    public static InputStream load(String path) throws IOException, InterruptedException {
+    public static Logs load(String path) throws IOException, InterruptedException {
         if (path.startsWith("http")) {
             return loadFromURL(path);
         }
         return loadFromGlob(path);
     }
+
+    public record Logs(InputStream stream, List<String> filenames) {}
 }
