@@ -15,7 +15,7 @@ public class PiCalculatorTest {
         100_000_000,
         1_000_000_000,
     })
-    void singleThreadAccuracyDoesNotExceedOnePercent(int numOfIterations) {
+    void singleThreadAccuracyDoesNotExceedOneAndHalfPercent(int numOfIterations) {
         double actualValue = PiCalculator.calculateBySingleThread(numOfIterations);
 
         assertThat(actualValue)
@@ -31,7 +31,7 @@ public class PiCalculatorTest {
         100_000_000,
         1_000_000_000,
     })
-    void multiThreadAccuracyDoesNotExceedOnePercent(int numOfIterations) {
+    void multiThreadAccuracyDoesNotExceedOneAndHalfPercent(int numOfIterations) {
         double actualValue = PiCalculator.calculateByMultipleThreads(numOfIterations, 8);
 
         assertThat(actualValue)
