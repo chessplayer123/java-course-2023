@@ -23,21 +23,21 @@ public class ArgParser {
     }
 
     @NotNull
-    public Map<String, String> parse(String[] args) throws RuntimeException {
+    public Map<String, String> parse(String[] args) throws ValidationException {
         Map<String, String> parsedArgs = new HashMap<>();
 
         for (int i = 0; i < args.length; i += 2) {
             if (!args[i].startsWith("--") || !definedArgs.containsKey(args[i].substring(2))) {
-                throw new RuntimeException("Unexpected argument '%s' was provided".formatted(args[i]));
+                throw new ValidationException("Unexpected argument '%s' was provided".formatted(args[i]));
             } else if (i == args.length - 1) {
-                throw new RuntimeException("No value was provided for argument '%s'".formatted(args[i]));
+                throw new ValidationException("No value was provided for argument '%s'".formatted(args[i]));
             }
             parsedArgs.put(args[i].substring(2), args[i + 1]);
         }
 
         for (var entry : definedArgs.entrySet()) {
             if (entry.getValue().isRequired && !parsedArgs.containsKey(entry.getKey())) {
-                throw new RuntimeException(
+                throw new ValidationException(
                     "No value was provided for required argument '%s'".formatted(entry.getKey())
                 );
             } else if (!entry.getValue().isRequired && !parsedArgs.containsKey(entry.getKey())) {

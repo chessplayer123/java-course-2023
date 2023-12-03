@@ -13,7 +13,7 @@ public class ArgParserTest {
         .optionalArgument("format", "markdown");
 
     @Test
-    void allArgumentsParsedCorrectly() {
+    void allArgumentsParsedCorrectly() throws ValidationException {
         String[] args = new String[] {
             "--path",   "glob-or-url",
             "--format", "adoc-or-markdown",
@@ -33,7 +33,7 @@ public class ArgParserTest {
     }
 
     @Test
-    void defaultValuesParsedCorrectly() {
+    void defaultValuesParsedCorrectly() throws ValidationException {
         String[] args = new String[] {"--path", "glob-or-url"};
 
         Map<String, String> expectedMap = Map.of(
@@ -52,7 +52,7 @@ public class ArgParserTest {
         String[] args = new String[] {"--path", "path", "--from"};
 
         assertThatThrownBy(() -> PARSER.parse(args))
-            .isInstanceOf(RuntimeException.class)
+            .isInstanceOf(ValidationException.class)
             .hasMessage("No value was provided for argument '--from'");
     }
 
@@ -61,7 +61,7 @@ public class ArgParserTest {
         String[] args = new String[] {"--format", "markdown"};
 
         assertThatThrownBy(() -> PARSER.parse(args))
-            .isInstanceOf(RuntimeException.class)
+            .isInstanceOf(ValidationException.class)
             .hasMessage("No value was provided for required argument 'path'");
     }
 
@@ -70,7 +70,7 @@ public class ArgParserTest {
         String[] args = new String[] {"--path", "path", "--unexpected", "value"};
 
         assertThatThrownBy(() -> PARSER.parse(args))
-            .isInstanceOf(RuntimeException.class)
+            .isInstanceOf(ValidationException.class)
             .hasMessage("Unexpected argument '--unexpected' was provided");
     }
 }

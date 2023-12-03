@@ -17,8 +17,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 import java.util.stream.Stream;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class LogLoader {
+    private static final Logger LOGGER = LogManager.getLogger();
+
     private LogLoader() {
     }
 
@@ -35,7 +39,9 @@ public class LogLoader {
                 try {
                     streams.add(new FileInputStream(path.toFile()));
                     filenames.add(path.getFileName().toString());
-                } catch (FileNotFoundException ignored) { }
+                } catch (FileNotFoundException exception) {
+                    LOGGER.warn("Error occurred while trying to find the file '{}': {}", path, exception.getMessage());
+                }
             });
         }
 

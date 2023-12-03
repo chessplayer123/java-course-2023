@@ -37,7 +37,7 @@ public final class Main {
         Map<String, String> parsedArgs;
         try {
             parsedArgs = ARG_PARSER.parse(args);
-        } catch (RuntimeException exception) {
+        } catch (ValidationException exception) {
             LOGGER.error(exception.getMessage());
             return;
         }
