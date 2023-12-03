@@ -2,22 +2,30 @@ package edu.hw8.QuoteService;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.InetSocketAddress;
-import java.nio.ByteBuffer;
-import java.nio.channels.SocketChannel;
-import java.nio.charset.StandardCharsets;
+import java.net.Socket;
 import org.jetbrains.annotations.NotNull;
 
 public class Client implements Closeable {
-    private final SocketChannel socket;
-    private final ByteBuffer buffer = ByteBuffer.allocate(1024);
+    private static final int CONNECTION_TIMEOUT = 1_000;
 
-    private Client(SocketChannel socket) {
+    private final Socket socket;
+    private final ObjectInputStream input;
+    private final ObjectOutputStream output;
+
+    private Client(Socket socket) throws IOException {
         this.socket = socket;
+        output = new ObjectOutputStream(socket.getOutputStream());
+        input = new ObjectInputStream(socket.getInputStream());
     }
 
     public static Client connectToServer(String address, int port) throws IOException {
-        SocketChannel socket = SocketChannel.open(new InetSocketAddress(address, port));
+        Socket socket = new Socket();
+        socket.setSoTimeout(CONNECTION_TIMEOUT);
+        socket.connect(new InetSocketAddress(address, port));
+
         return new Client(socket);
     }
 
@@ -27,23 +35,15 @@ public class Client implements Closeable {
     }
 
     private void sendMessage(@NotNull String message) throws IOException {
-        socket.write(ByteBuffer.wrap(message.getBytes(StandardCharsets.UTF_8)));
+        output.writeObject(message);
     }
 
-    public String getQuoteByTheme(String theme) throws IOException {
+    public String getQuoteByTheme(String theme) throws IOException  {
         sendMessage(theme);
-
-        StringBuilder message = new StringBuilder();
-
-        buffer.clear();
-        while (socket.read(buffer) > 0) {
-            buffer.flip();
-            byte[] bytes = new byte[buffer.remaining()];
-            buffer.get(bytes);
-
-            message.append(new String(bytes, StandardCharsets.UTF_8));
+        try {
+            return (String) input.readObject();
+        } catch (ClassNotFoundException ignored) {
         }
-
-        return message.toString();
+        return null;
     }
 }
