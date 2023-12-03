@@ -22,6 +22,8 @@ public class PasswordHacker {
     private Map<String, String> passwords;
 
     public PasswordHacker() {
+        users = new HashMap<>();
+        passwords = new HashMap<>();
     }
 
     private void hackRange(long start, long end) throws NoSuchAlgorithmException {
@@ -41,7 +43,7 @@ public class PasswordHacker {
         }
     }
 
-    private Collection<Callable<Void>> getTasks(int length, int threadsNum) {
+    private Collection<Callable<Void>> divideRangeIntoTasks(int length, int threadsNum) {
         long limit = (long) Math.pow(ALPHABET.length(), length);
 
         Collection<Callable<Void>> workers = new ArrayList<>(threadsNum);
@@ -60,26 +62,31 @@ public class PasswordHacker {
         return workers;
     }
 
-    public Map<String, String> hackPasswords(BufferedReader data, int lengthLimit, int threadsNum) throws IOException {
-        users = new HashMap<>();
+    public Map<String, String> hackPasswords(
+        BufferedReader data,
+        int lengthLimit,
+        int threadsNum
+    ) throws IOException, ExecutionException, InterruptedException {
+        users.clear();
         String line;
         while ((line = data.readLine()) != null) {
             String[] parts = line.split(" ");
+            if (parts.length != 2) {
+                throw new IOException("wrong data format");
+            }
 
             users.putIfAbsent(parts[1], new ArrayList<>());
             users.get(parts[1]).add(parts[0]);
         }
 
-        Collection<Callable<Void>> tasks = getTasks(lengthLimit, threadsNum);
+        Collection<Callable<Void>> tasks = divideRangeIntoTasks(lengthLimit, threadsNum);
 
-        passwords = new HashMap<>();
+        passwords.clear();
         try (ExecutorService pool = Executors.newFixedThreadPool(threadsNum)) {
             List<Future<Void>> futures = pool.invokeAll(tasks);
             for (Future<Void> future : futures) {
                 future.get();
             }
-        } catch (ExecutionException | InterruptedException e) {
-            throw new RuntimeException(e);
         }
 
         return passwords;

@@ -1,11 +1,11 @@
 package edu.hw8.QuoteService;
 
-import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
+import org.jetbrains.annotations.NotNull;
 
 public class QuoteServer implements QuoteDatabase {
     private final Map<String, List<String>> quotes;
@@ -19,8 +19,9 @@ public class QuoteServer implements QuoteDatabase {
 
         for (Quote quote : quotes) {
             for (String theme : quote.themes) {
-                map.putIfAbsent(theme, new ArrayList<>());
-                map.get(theme).add(quote.quote);
+                String themeLowerCase = theme.toLowerCase();
+                map.putIfAbsent(themeLowerCase, new ArrayList<>());
+                map.get(themeLowerCase).add(quote.quote);
             }
         }
 
@@ -51,11 +52,13 @@ public class QuoteServer implements QuoteDatabase {
     @Override
     @NotNull
     public String getQuoteByTheme(@NotNull String theme) {
-        if (!quotes.containsKey(theme)) {
+        String themeLowerCase = theme.toLowerCase();
+
+        if (!quotes.containsKey(themeLowerCase)) {
             return "";
         }
 
-        List<String> phrases = quotes.get(theme);
+        List<String> phrases = quotes.get(themeLowerCase);
         ThreadLocalRandom random = ThreadLocalRandom.current();
         return phrases.get(random.nextInt(phrases.size()));
     }

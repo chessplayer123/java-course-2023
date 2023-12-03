@@ -41,7 +41,7 @@ public class ServerWorker extends Thread {
 
     @Override
     public void run() {
-        while (client.isConnected()) {
+        while (client.isOpen()) {
             try {
                 String theme = readMessage();
                 LOGGER.info("Received message '{}' from {}", theme, client.getRemoteAddress());
