@@ -12,11 +12,11 @@ public class MultiThreadRenderer implements Renderer {
     }
 
     @Override
-    public void render(FractalImage image, int samples, RendererParameters description) {
+    public void render(FractalImage image, int samples, RendererParameters params) {
         final int tasksForThread = Math.ceilDiv(samples, numOfThreads);
         try (ExecutorService pool = Executors.newFixedThreadPool(numOfThreads)) {
             for (int thread = 0; thread < numOfThreads; ++thread) {
-                pool.execute(() -> new SingleThreadRenderer().render(image, tasksForThread, description));
+                pool.execute(() -> new SingleThreadRenderer().render(image, tasksForThread, params));
             }
         }
     }
