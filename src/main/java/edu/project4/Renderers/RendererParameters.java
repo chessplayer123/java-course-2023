@@ -3,7 +3,6 @@ package edu.project4.Renderers;
 import edu.project4.Rect;
 import edu.project4.Transformations.Affine;
 import edu.project4.Transformations.Transformation;
-import java.util.Collections;
 import java.util.List;
 import java.util.random.RandomGenerator;
 
