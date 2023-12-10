@@ -3,11 +3,12 @@ package edu.project4;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.List;
+import java.util.Set;
 import javax.imageio.ImageIO;
 
 public final class ImageUtils {
-    private static final List<String> SUPPORTED_FORMATS = List.of("jpg", "bmp", "png", "jpeg");
+    private static final Set<String> SUPPORTED_FORMATS = Set.of(ImageIO.getWriterFormatNames());
+
     private ImageUtils() {
     }
 

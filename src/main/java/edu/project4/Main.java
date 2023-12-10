@@ -21,11 +21,13 @@ public final class Main {
             .setIterationsPerSample(1000)
             .addProcessor(LogGammaCorrection.withGamma(2.2))
             .setTransformations(Transformation.curl(), Transformation.eyefish(), Transformation.spherical())
-            .setTargetColors(
+            .setRandomAffine(
+                20, 5,
                 Pixel.create(255, 221, 226), Pixel.create(250, 160, 148),
-                Pixel.create(158, 217, 204), Pixel.create(0, 140, 118))
+                Pixel.create(158, 217, 204), Pixel.create(0, 140, 118)
+            )
             .render(image, 50_000, System.currentTimeMillis());
 
-        ImageUtils.save(Path.of("src", "main", "resources", "fractal.jpg"), image);
+        ImageUtils.save(Path.of("src", "main", "resources", "fractals/fractal.jpg"), image);
     }
 }

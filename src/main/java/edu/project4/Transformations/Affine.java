@@ -9,7 +9,6 @@ public record Affine(
     double d, double e, double f,
     int red, int green, int blue
 ) implements Transformation {
-    private static final int DENSITY = 5;
     private static final int COLOR_BOUND = 256;
 
     public static Affine random(Random random) {
@@ -35,7 +34,7 @@ public record Affine(
         return new Affine(a, b, c, d, e, f, red, green, blue);
     }
 
-    public static Affine random(Random random, Pixel targetColor) {
+    public static Affine random(Random random, Pixel targetColor, int density) {
         double a;
         double b;
         double c;
@@ -52,16 +51,16 @@ public record Affine(
         } while (!isAffineCoefficients(a, b, c, d, e, f));
 
         int red = random.nextInt(
-            Math.max(targetColor.red() - DENSITY, 0),
-            Math.min(targetColor.red() + DENSITY, COLOR_BOUND)
+            Math.max(targetColor.red() - density, 0),
+            Math.min(targetColor.red() + density, COLOR_BOUND)
         );
         int green = random.nextInt(
-            Math.max(targetColor.green() - DENSITY, 0),
-            Math.min(targetColor.green() + DENSITY, COLOR_BOUND)
+            Math.max(targetColor.green() - density, 0),
+            Math.min(targetColor.green() + density, COLOR_BOUND)
         );
         int blue = random.nextInt(
-            Math.max(targetColor.blue() - DENSITY, 0),
-            Math.min(targetColor.blue() + DENSITY, COLOR_BOUND)
+            Math.max(targetColor.blue() - density, 0),
+            Math.min(targetColor.blue() + density, COLOR_BOUND)
         );
 
         return new Affine(a, b, c, d, e, f, red, green, blue);

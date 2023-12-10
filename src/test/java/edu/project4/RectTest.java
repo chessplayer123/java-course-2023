@@ -47,7 +47,6 @@ public class RectTest {
         Rect rect = new Rect(0.5, 10.3, 15.3, 10.0);
 
         Point randomPoint = rect.getRandomPoint(random);
-        System.out.println(randomPoint);
 
         assertThat(rect.containsPoint(randomPoint)).isTrue();
     }

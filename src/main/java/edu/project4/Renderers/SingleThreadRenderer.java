@@ -23,11 +23,10 @@ public class SingleThreadRenderer implements Renderer {
             Point newPoint = biunitRect.getRandomPoint(random);
             for (int step = -NORMALIZATION_STEPS; step < params.iterationsPerSample(); ++step) {
                 Affine affine = params.peekAffine(random);
-                newPoint = affine.apply(newPoint);
                 Transformation nonLinear = params.peekTransformation(random);
-                newPoint = nonLinear.apply(newPoint);
+                newPoint = affine.andThen(nonLinear).apply(newPoint);
 
-                if (step < 0) {
+                if (step < 0 || !biunitRect.containsPoint(newPoint)) {
                     continue;
                 }
 
