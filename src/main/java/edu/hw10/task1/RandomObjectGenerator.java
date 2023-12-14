@@ -3,7 +3,6 @@ package edu.hw10.task1;
 import edu.hw10.task1.Annotations.NotNull;
 import edu.hw10.task1.ParameterGenerators.ParameterGenerator;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.Map;

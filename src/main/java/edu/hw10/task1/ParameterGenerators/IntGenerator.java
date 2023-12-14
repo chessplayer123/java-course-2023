@@ -2,9 +2,9 @@ package edu.hw10.task1.ParameterGenerators;
 
 import edu.hw10.task1.Annotations.Max;
 import edu.hw10.task1.Annotations.Min;
+import edu.hw10.task1.UnsupportedObjectException;
 import java.lang.annotation.Annotation;
 import java.util.random.RandomGenerator;
-import edu.hw10.task1.UnsupportedObjectException;
 
 public class IntGenerator implements ParameterGenerator<Integer> {
     @Override
