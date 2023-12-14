@@ -4,12 +4,11 @@ import edu.hw10.task1.Annotations.Max;
 import edu.hw10.task1.Annotations.Min;
 import java.lang.annotation.Annotation;
 import java.util.random.RandomGenerator;
-import org.jetbrains.annotations.NotNull;
+import edu.hw10.task1.UnsupportedObjectException;
 
 public class DoubleGenerator implements ParameterGenerator<Double> {
     @Override
-    @NotNull
-    public Double generate(RandomGenerator random, Annotation[] annotations) {
+    public Double generate(RandomGenerator random, Annotation[] annotations) throws UnsupportedObjectException {
         double minValue = Double.MIN_VALUE;
         double maxValue = Double.MAX_VALUE;
         for (var annotation : annotations) {
@@ -18,6 +17,9 @@ public class DoubleGenerator implements ParameterGenerator<Double> {
             } else if (annotation instanceof Max maxAnnotation) {
                 maxValue = (double) maxAnnotation.value();
             }
+        }
+        if (minValue > maxValue) {
+            throw new UnsupportedObjectException("lower bound is larger than upper bound");
         }
         return random.nextDouble(minValue, maxValue);
     }

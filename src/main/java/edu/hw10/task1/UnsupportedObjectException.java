@@ -1,6 +1,10 @@
 package edu.hw10.task1;
 
 public class UnsupportedObjectException extends Exception {
+    public UnsupportedObjectException(String message) {
+        super(message);
+    }
+
     public UnsupportedObjectException(Object object) {
         super("Object <%s> can't be generated".formatted(object.toString()));
     }

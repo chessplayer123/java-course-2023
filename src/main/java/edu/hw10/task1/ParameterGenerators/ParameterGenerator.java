@@ -1,13 +1,12 @@
 package edu.hw10.task1.ParameterGenerators;
 
+import edu.hw10.task1.UnsupportedObjectException;
 import java.lang.annotation.Annotation;
 import java.util.Map;
 import java.util.random.RandomGenerator;
-import org.jetbrains.annotations.NotNull;
 
 public interface ParameterGenerator<T> {
-    @NotNull
-    T generate(RandomGenerator random, Annotation[] annotations);
+    T generate(RandomGenerator random, Annotation[] annotations) throws UnsupportedObjectException;
 
     @SuppressWarnings("MagicNumber")
     static Map<Class<?>, ParameterGenerator<?>> getDefault() {

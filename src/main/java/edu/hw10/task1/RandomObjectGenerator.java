@@ -34,8 +34,8 @@ public class RandomObjectGenerator {
             }
             try {
                 Object[] randomParameters = generateParameters(method.getParameters());
-                return (T) method.invoke(null, randomParameters);
-            } catch (UnsupportedObjectException | InvocationTargetException | IllegalAccessException exception) {
+                return cls.cast(method.invoke(null, randomParameters));
+            } catch (Exception exception) {
                 LOGGER.warn(exception.getMessage());
             }
         }
@@ -48,17 +48,17 @@ public class RandomObjectGenerator {
     public <T> T nextObject(Class<T> cls) throws UnsupportedObjectException {
         Constructor<?>[] constructors = cls.getDeclaredConstructors();
         if (constructors.length == 0) {
-            throw new UnsupportedObjectException(cls, new NoSuchMethodException("Class doesn't have constructors"));
+            throw new UnsupportedObjectException(
+                cls,
+                new NoSuchMethodException("Class doesn't have public constructors")
+            );
         }
 
         for (var constructor : constructors) {
             try {
                 Object[] randomParameters = generateParameters(constructor.getParameters());
-                return (T) constructor.newInstance(randomParameters);
-            } catch (UnsupportedObjectException
-                     | InvocationTargetException
-                     | InstantiationException
-                     | IllegalAccessException exception) {
+                return cls.cast(constructor.newInstance(randomParameters));
+            } catch (Exception exception) {
                 LOGGER.warn("Can't generate <{}>: {}", constructor.getName(), exception.getMessage());
             }
         }
@@ -66,21 +66,23 @@ public class RandomObjectGenerator {
     }
 
     private Object[] generateParameters(Parameter[] parameters) throws UnsupportedObjectException {
-        Object[] randomParameters = new Object[parameters.length];
-        for (int i = 0; i < randomParameters.length; ++i) {
-            if (generators.containsKey(parameters[i].getType())) {
-                randomParameters[i] = generators
-                    .get(parameters[i].getType())
-                    .generate(random, parameters[i].getAnnotations());
-            } else {
-                try {
+        int length = parameters.length;
+        Object[] randomParameters = new Object[length];
+        for (int i = 0; i < length; ++i) {
+            try {
+                if (generators.containsKey(parameters[i].getType())) {
+                    randomParameters[i] = generators
+                        .get(parameters[i].getType())
+                        .generate(random, parameters[i].getAnnotations());
+                } else {
                     randomParameters[i] = nextObject(parameters[i].getType());
-                } catch (UnsupportedObjectException exception) {
-                    if (parameters[i].isAnnotationPresent(NotNull.class)) {
-                        throw exception;
-                    }
-                    randomParameters[i] = null;
                 }
+            } catch (UnsupportedObjectException exception) {
+                LOGGER.warn(exception.getMessage());
+                randomParameters[i] = null;
+            }
+            if (parameters[i].isAnnotationPresent(NotNull.class) && randomParameters[i] == null) {
+                throw new UnsupportedObjectException(parameters[i].getType());
             }
         }
         return randomParameters;

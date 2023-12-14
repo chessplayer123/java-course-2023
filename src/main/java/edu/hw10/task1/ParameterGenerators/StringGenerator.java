@@ -4,7 +4,7 @@ import edu.hw10.task1.Annotations.Max;
 import edu.hw10.task1.Annotations.Min;
 import java.lang.annotation.Annotation;
 import java.util.random.RandomGenerator;
-import org.jetbrains.annotations.NotNull;
+import edu.hw10.task1.UnsupportedObjectException;
 
 public class StringGenerator implements ParameterGenerator<String> {
     private static final int LENGTH_LOWER_BOUND = 0;
@@ -19,8 +19,7 @@ public class StringGenerator implements ParameterGenerator<String> {
     }
 
     @Override
-    @NotNull
-    public String generate(RandomGenerator random, Annotation[] annotations) {
+    public String generate(RandomGenerator random, Annotation[] annotations) throws UnsupportedObjectException  {
         int minLen = LENGTH_LOWER_BOUND;
         int maxLen = LENGTH_UPPER_BOUND;
         for (var annotation : annotations) {
@@ -30,9 +29,12 @@ public class StringGenerator implements ParameterGenerator<String> {
                 maxLen = (int) maxAnnotation.value();
             }
         }
-        int length = random.nextInt(minLen, maxLen + 1);
+        if (minLen > maxLen || charsLowerBound > charsUpperBound) {
+            throw new UnsupportedObjectException("lower bound is larger than upper bound");
+        }
 
         StringBuilder builder = new StringBuilder();
+        int length = random.nextInt(minLen, maxLen + 1);
         for (int i = 0; i < length; ++i) {
             builder.append((char) random.nextInt(charsLowerBound, charsUpperBound + 1));
         }

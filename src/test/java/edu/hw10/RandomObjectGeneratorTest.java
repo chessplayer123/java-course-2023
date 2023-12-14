@@ -37,6 +37,28 @@ public class RandomObjectGeneratorTest {
         assertThat(actualRecord.longValue()).isBetween(1_000_000L, 1_000_000_000L);
     }
 
+    @Test
+    void parametersWithPrimitiveTypesAndConflictingAnnotations_shouldThrow() {
+        Random random = new Random();
+        RandomObjectGenerator generator = new RandomObjectGenerator(random);
+
+        assertThatThrownBy(() -> generator.nextObject(RecordWithConflictingAnnotations.class, "create"))
+            .isInstanceOf(UnsupportedObjectException.class);
+    }
+
+    @Test
+    void parametersWithConflictingAnnotationsIsNull() throws UnsupportedObjectException {
+        Random random = new Random();
+        RandomObjectGenerator generator = new RandomObjectGenerator(random);
+
+        var actualRecord = generator.nextObject(RecordWithConflictingAnnotations.class);
+
+        assertThat(actualRecord)
+            .extracting("intValue", "doubleValue", "longValue", "stringValue")
+            .containsOnlyNulls();
+    }
+
+
     @RepeatedTest(16)
     void unsupportedParameter_shouldBeEqualToNull() throws UnsupportedObjectException {
         Random random = new Random();
@@ -58,11 +80,22 @@ public class RandomObjectGeneratorTest {
     }
 
     public record RecordWithMinMax(
-        @Min(10) @Max(12) Integer intValue,
+        @Min(10) @Max(12) int intValue,
         @Min(0) @Max(1) double doubleValue,
-        @Min(1_000_000) @Max(1_000_000_000) Long longValue,
+        @Min(1_000_000) @Max(1_000_000_000) long longValue,
         @Min(0) @Max(16) String stringValue
     ) {
+    }
+
+    public record RecordWithConflictingAnnotations (
+        @Min(100) @Max(0) Integer intValue,
+        @Min(1) @Max(0) Double doubleValue,
+        @Min(1_000_000) @Max(0) Long longValue,
+        @Min(16) @Max(0) String stringValue
+    ) {
+        public static RecordWithConflictingAnnotations create(@Min(1) @Max(0) double doubleValue) {
+            return new RecordWithConflictingAnnotations(null, doubleValue, null, null);
+        }
     }
 
     public record RecordWithUnsupportedParameter(List<Integer> list) {
