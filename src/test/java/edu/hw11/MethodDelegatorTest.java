@@ -1,16 +1,14 @@
 package edu.hw11;
 
-import net.bytebuddy.agent.ByteBuddyAgent;
 import org.junit.jupiter.api.Test;
+import java.lang.reflect.InvocationTargetException;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MethodDelegatorTest {
     @Test
-    void methodDelegator_shouldChangeMethodFunctionality() {
-        ByteBuddyAgent.install();
-        MethodDelegator.delegate(ArithmeticUtils.class, DelegatedArithmeticUtils.class, "sum");
-
-        ArithmeticUtils utils = new ArithmeticUtils();
+    void methodDelegator_shouldChangeMethodFunctionality()
+        throws InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException {
+        ArithmeticUtils utils = MethodDelegator.delegate(ArithmeticUtils.class, DelegatedArithmeticUtils.class, "sum");
 
         int num1 = 10;
         int num2 = 15;
@@ -20,7 +18,7 @@ public class MethodDelegatorTest {
         assertThat(actualOutput).isEqualTo(expectedOutput);
     }
 
-    public class DelegatedArithmeticUtils {
+    public static class DelegatedArithmeticUtils {
         public static int sum(int a, int b) {
             return a * b;
         }
